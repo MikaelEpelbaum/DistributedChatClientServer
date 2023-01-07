@@ -12,8 +12,8 @@ public class Client {
     public Client(Socket socket, String username){
         try{
             this.socket = socket;
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.userName = username;
         }catch (IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
@@ -27,7 +27,7 @@ public class Client {
             bufferedWriter.flush();
 
             Scanner scanner = new Scanner(System.in);
-            while(socket.isClosed()) {
+            while(socket.isConnected()) {
                 String messageToSend = scanner.nextLine();
                 bufferedWriter.write(userName + " : " + messageToSend);
                 bufferedWriter.newLine();
@@ -44,7 +44,7 @@ public class Client {
             public void run() {
                 String messageFromGroupChat;
 
-                while (socket.isClosed()) {
+                while (socket.isConnected()) {
                     try {
                     messageFromGroupChat = bufferedReader.readLine();
                     System.out.println(messageFromGroupChat);

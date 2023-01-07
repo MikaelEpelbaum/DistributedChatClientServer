@@ -13,8 +13,8 @@ public class ClientHandler implements Runnable{
     public ClientHandler(Socket socket){
         try{
             this.socket = socket;
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.clientUserName = bufferedReader.readLine();
             clientHandlers.add(this);
             broadcastMessage("Server: " + clientUserName + " has joined the chat.");
@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable{
     public void run(){
         String messageFrontClient;
 
-        while(socket.isClosed()){
+        while(socket.isConnected()){
             try {
                 messageFrontClient = bufferedReader.readLine();
                 broadcastMessage(messageFrontClient);
@@ -43,7 +43,7 @@ public class ClientHandler implements Runnable{
     public void broadcastMessage(String messageToSend){
         for (ClientHandler clientHandler : clientHandlers){
             try{
-                if (!clientHandler.clientUserName.equals((clientUserName))){
+                if (!clientHandler.clientUserName.equals(clientUserName)){
                     clientHandler.bufferedWriter.write(messageToSend);
                     clientHandler.bufferedWriter.newLine();
                     clientHandler.bufferedWriter.flush();
